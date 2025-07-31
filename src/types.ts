@@ -4,9 +4,17 @@
  */
 
 export interface ModelSignatureConfig {
+  apiKey?: string;
   apiBaseUrl?: string;
   timeout?: number;
   retries?: number;
+}
+
+export interface ModelSignatureConfigRequired {
+  apiKey?: string;
+  apiBaseUrl: string;
+  timeout: number;
+  retries: number;
 }
 
 export interface JWTClaims {
