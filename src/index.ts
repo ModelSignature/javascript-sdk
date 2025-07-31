@@ -25,21 +25,3 @@ export type {
 
 // Export errors
 export { ModelSignatureError, PolicyViolationError } from './types';
-
-// Convenience export for common usage patterns
-export const ModelSignature = {
-  Client: ModelSignatureClient,
-  PolicyEnforcer,
-  createSecurePolicy,
-  createLenientPolicy,
-  utils: {
-    hashOutput,
-    parseJWT,
-    isTokenExpired,
-    getTokenAge,
-    isValidTokenFormat
-  }
-};
-
-// Default export
-export default ModelSignature;

@@ -28,7 +28,11 @@ describe('PolicyEnforcer', () => {
       jti: 'test-jti',
       ...claims
     };
-    const encodedPayload = btoa(JSON.stringify(defaultClaims));
+    // Create proper base64url encoded token (no padding, use - and _ instead of + and /)
+    const encodedPayload = btoa(JSON.stringify(defaultClaims))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
     return `header.${encodedPayload}.signature`;
   };
 

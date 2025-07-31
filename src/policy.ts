@@ -54,7 +54,16 @@ export class PolicyEnforcer {
       this.checkTokenPolicy(token, verification, violations);
       
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown verification error';
+      let errorMessage = error instanceof Error ? error.message : 'Unknown verification error';
+      
+      // Extract original error message from retry wrapper
+      if (errorMessage.includes('Request failed after') && errorMessage.includes('attempts:')) {
+        const match = errorMessage.match(/attempts: (.+)$/);
+        if (match) {
+          errorMessage = match[1];
+        }
+      }
+      
       violations.push(`Verification request failed: ${errorMessage}`);
       
       verification = {
@@ -195,11 +204,12 @@ export class PolicyEnforcer {
     } = {}
   ): Promise<boolean> {
     try {
-      const tempConfig = {
-        requireDeploymentId: rules.requireDeployment,
-        requireModelDigest: rules.requireDigest,
-        maxTokenAge: rules.maxAge,
-        allowedProviders: rules.allowedProviders,
+      const tempConfig: PolicyConfig = {
+        ...this.config,
+        requireDeploymentId: rules.requireDeployment ?? this.config.requireDeploymentId,
+        requireModelDigest: rules.requireDigest ?? this.config.requireModelDigest,
+        maxTokenAge: rules.maxAge ?? this.config.maxTokenAge,
+        allowedProviders: rules.allowedProviders ?? this.config.allowedProviders,
         failClosed: false // Don't throw for quick check
       };
 
